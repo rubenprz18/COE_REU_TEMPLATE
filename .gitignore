@@ -29,5 +29,10 @@
 # Build output directory
 build/
 
+# Compiled output. Overleaf builds its own, and committing this churns a
+# binary on every edit. If you want a preview PDF in the repo, commit one
+# deliberately under a different name (e.g. preview.pdf).
+main.pdf
+
 # macOS
 .DS_Store

@@ -346,20 +346,31 @@
         }
 
         % ---- EMISSION-LINE BAND --------------------------------------
+        % A full-width spectrum strip along the bottom edge. The strip is
+        % filled with the ground colour first, which masks the wavefront
+        % rings behind it -- without that mask the lines and the rings
+        % overlap into visual noise and the band reads as a bar chart.
+        \fill[myDColor]
+            (current page.south west) rectangle
+            ($(current page.south east)+(0,2.9)$);
+        \draw[coeGold, opacity=0.5, line width=0.6pt]
+            ($(current page.south west)+(0,2.9)$) --
+            ($(current page.south east)+(0,2.9)$);
         % Irregular spacing and varying width/opacity, the way a real
         % emission spectrum looks. Format is x-offset/width-pt/opacity.
         \foreach \x/\w/\o in {%
-            1.6/2.2/0.95, 2.05/0.9/0.55, 2.6/3.4/1.0,  3.15/1.1/0.45,
-            3.5/0.8/0.35, 4.15/2.8/0.9,  4.6/1.4/0.6,  5.3/0.7/0.30,
-            5.75/3.0/0.95, 6.4/1.0/0.4,  6.8/1.8/0.7,  7.6/0.8/0.30,
-            8.1/2.4/0.85, 8.7/1.2/0.5,   9.4/0.9/0.35, 10.0/2.0/0.75}{%
+            0.7/2.2/0.90,  1.15/0.9/0.45, 1.9/3.2/1.00, 2.45/1.1/0.40,
+            2.8/0.8/0.30,  3.6/2.6/0.85,  4.05/1.4/0.55, 4.9/0.7/0.28,
+            5.4/3.0/0.95,  6.1/1.0/0.38,  6.55/1.8/0.65, 7.4/0.8/0.28,
+            8.0/2.4/0.85,  8.6/1.2/0.45,  9.4/0.9/0.32, 10.1/2.0/0.72,
+            10.8/1.1/0.40, 11.5/2.8/0.90, 12.2/0.8/0.28, 12.9/1.6/0.60,
+            13.7/1.0/0.35, 14.3/2.2/0.80, 15.1/0.9/0.30, 15.8/1.4/0.52,
+            16.6/2.6/0.88, 17.3/0.8/0.28, 18.0/1.2/0.42, 18.9/2.0/0.70,
+            19.6/0.9/0.32, 20.4/1.5/0.55}{%
             \draw[coeGold, line width=\w pt, opacity=\o]
-                ($(current page.south west)+(\x,1.5)$) --
-                ($(current page.south west)+(\x,4.6)$);
+                ($(current page.south west)+(\x,0.55)$) --
+                ($(current page.south west)+(\x,2.55)$);
         }
-        \draw[coeGold, opacity=0.55, line width=0.5pt]
-            ($(current page.south west)+(1.2,1.5)$) --
-            ($(current page.south west)+(10.8,1.5)$);
     \end{scope}
 
     % ---- COE WORDMARK (white knockout) -------------------------------
