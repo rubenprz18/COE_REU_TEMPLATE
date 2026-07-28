@@ -56,7 +56,7 @@ Everything you normally need is in the first 25 lines of `main.tex`.
 
 \renewcommand{\reportNumber}{1}
 \renewcommand{\reportKicker}{Coe College REU}
-\renewcommand{\coeProgram}{Spectroscopy at Coe College}
+\renewcommand{\coeProgram}{Research at Coe College}
 ```
 
 | Command | What it controls | Default |
@@ -64,7 +64,7 @@ Everything you normally need is in the first 25 lines of `main.tex`.
 | `\pretitle{…}{…}{…}` | Cover title, subtitle, author | — |
 | `\reportNumber` | The large numeral on the chapter page | `1` |
 | `\reportKicker` | Rotated spine label and the running header | `Coe College REU` |
-| `\coeProgram` | Program line on the cover and in the footer | `Spectroscopy at Coe College` |
+| `\coeProgram` | Program line on the cover and in the footer | `Research at Coe College` |
 | `\coeLogoFile` | Cover wordmark image | `Coe_Logo_Inverse.png` |
 
 All of these have defaults, so override only what you need. The year on the
@@ -109,7 +109,9 @@ Note the label goes *inside* the environment.
 | `\vec{v}` | Bold vector notation instead of an arrow |
 | `\boldone` | Blackboard-bold identity/unit symbol |
 
-Put your citations in `bib.bib`.
+Put your citations in `bib.bib`. The References section prints automatically at
+the end. If your report has no citations, add `\coeprintbibfalse` to your
+preamble to suppress it.
 
 ---
 
@@ -150,10 +152,13 @@ fails immediately under it.
 
 Bibliography needs **biber**, not bibtex.
 
-Beyond a standard full TeX install, the class pulls in `tcolorbox`, `biblatex-ext`,
-`physics`, `tensor`, `stmaryrd`, `dsfont`, `bbold`, `pgfplots`, `montserrat`,
-and `roboto`. All ship with full TeX Live and are present on Overleaf. A minimal
-install (BasicTeX) will need them added.
+Beyond a standard full TeX install, the class pulls in `tcolorbox`, `environ`,
+`biblatex-ext`, `physics`, `tensor`, `stmaryrd`, `dsfont`, `bbold`, `pgfplots`,
+`montserrat`, and `roboto`. All ship with full TeX Live and are present on
+Overleaf. A minimal install (BasicTeX) will need them added.
+
+Verified against TeX Live 2026: clean build, no errors, no font substitutions,
+no overfull boxes.
 
 ---
 
@@ -161,17 +166,25 @@ install (BasicTeX) will need them added.
 
 Inherited from the original template, documented here so they don't surprise you:
 
-- **`\section*{}` does not work.** The class redefines `\section` to always be
-  unnumbered, and the redefinition swallows the `*`. Just use `\section{}`.
 - **`\ref{}` to a section gives the wrong number**, because sections are
-  unnumbered. Use `\nameref{}` instead, which prints the section title.
+  deliberately unnumbered. Use `\nameref{}` instead, which prints the section
+  title.
 - **Chapters do not start a new page.** The class deliberately patches this out
   so the cover isn't followed by a blank. With multiple chapters they run on
   inline; add `\clearpage` yourself if you want the break.
-- **The bibliography always prints**, even with no citations, so a report with
-  no references still gets a References section.
 - **`physics` and `siunitx` conflict.** Both define `\qty`. If you need
   `siunitx` for units, remove `\RequirePackage{physics}` from `coereu.cls`.
+
+### Fixed in this version
+
+- `\section*{}` now works. The original redefinition took a mandatory argument,
+  which swallowed the star. Starred sections render but stay out of the
+  mini-summary, as you'd expect.
+- The bibliography no longer prints when there's nothing to print. `bib.bib` is
+  loaded only if it exists, and you can suppress the References section
+  explicitly with `\coeprintbibfalse` in your preamble.
+- The PDF now carries real title/author/subject metadata, taken from your
+  `\pretitle` arguments.
 
 ---
 

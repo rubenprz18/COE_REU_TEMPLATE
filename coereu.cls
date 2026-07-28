@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{coereu}[2026/07/27 Coe College Summer REU report class]
+\ProvidesClass{coereu}[2026/07/28 Coe College Summer REU report class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Coe College summer REU write-up template.
@@ -23,7 +23,6 @@
 
 % TEXT FORMATTING AND MANIPULATION
 \RequirePackage{indentfirst} % Indent the first paragraph of a section
-\RequirePackage{datetime} % Provides various features of date and time formatting
 \RequirePackage{csquotes} % Context sensitive quotation facilities
 \RequirePackage{mathrsfs} % Provides additional math scripts fonts
 \RequirePackage{titlesec} % Allows customization of section titles
@@ -46,9 +45,10 @@
 \RequirePackage{float} % provides H option for figures and tables
 \RequirePackage{xcolor} % for color support
 \RequirePackage{tikz} % for creating graphics and diagrams
-\RequirePackage{tikz-3dplot} % for 3D graphics in TikZ
 \RequirePackage{pgfplots} % for creating plots and diagrams
 \RequirePackage[most]{tcolorbox} % for creating colored boxes and frames
+\RequirePackage{environ} % \NewEnviron, used by the keyresult box. tcolorbox
+                         % pulls this in anyway, but relying on that is fragile.
 
 % PAGE AND TEXT STYLES
 \RequirePackage[colorlinks = true,
@@ -87,7 +87,6 @@
 \providecommand{\montserratfamily}{\sffamily}
 \newcommand{\coeHeadFont}{\montserratfamily}
 \RequirePackage{nameref} % Cross-referencing by name
-\RequirePackage{changepage} % Change page dimensions
 
 % BIBLIOGRAFY
 \RequirePackage[backend    = biber, 
@@ -102,8 +101,11 @@
 
 % BIBLIOGRAFYU SETTINGS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The below settings add the .bib archive and define the format which will be compilated
-\addbibresource{bib.bib} %Load references
+% Load bib.bib if it exists. Guarding this means a project that hasn't
+% written a bibliography yet still compiles instead of dying on a missing
+% resource. Add more with \addbibresource{other.bib} in your document.
+\newif\ifcoeprintbib
+\IfFileExists{bib.bib}{\addbibresource{bib.bib}\coeprintbibtrue}{\coeprintbibfalse}
 \DeclareFieldFormat[article,periodical]{volume}{\mkbibbold{#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,13 +118,17 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The below setting was written to print the references
+% Print the references at the end of the document. Set \coeprintbibfalse in
+% your document to suppress this -- otherwise a report with no citations
+% still gets an empty References section.
 \AtEndDocument{%
-    \clearpage
-    \pagestyle{coereu} % defined near the end of this class
-    \markboth{\textsc{References}}{\textsc{References}} % ensures headers are working as intended during reference chapter
-    \printbibliography[heading=bibintoc, title=References]
-} % prints references
+    \ifcoeprintbib
+        \clearpage
+        \pagestyle{coereu} % defined near the end of this class
+        \markboth{\textsc{References}}{\textsc{References}} % keeps headers right in the reference chapter
+        \printbibliography[heading=bibintoc, title=References]
+    \fi
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -181,7 +187,7 @@
 % definition no longer breaks the build.
 \newcommand{\reportNumber}{1}                            % big chapter numeral
 \newcommand{\reportKicker}{Coe College REU}              % rotated spine label
-\newcommand{\coeProgram}{Spectroscopy at Coe College}    % cover program line
+\newcommand{\coeProgram}{Research at Coe College}    % cover program line
 \newcommand{\coeLogoFile}{Coe_Logo_Inverse.png}          % white knockout mark
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -278,12 +284,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This command is a reformulation of the \section{} command, so that from now on, every time this command is called it will not compile the section number, only the title, but will still add this title in the table of contents
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\let\oldsection\section                             
-\renewcommand{\section}[1]{%                        
-    \oldsection*{#1}                                
-    \phantomsection                                
-    \addcontentsline{toc}{section}{#1}              
-}                                                    
+% Sections are always unnumbered, for a cleaner mini-summary, but still get
+% a table-of-contents entry. The original redefinition took a mandatory
+% argument, which swallowed the star and made \section*{} silently
+% impossible; \@ifstar handles both forms properly.
+\let\oldsection\section
+\makeatletter
+\newcommand{\coe@section}[1]{%
+    \oldsection*{#1}%
+    \phantomsection
+    \addcontentsline{toc}{section}{#1}%
+}
+\newcommand{\coe@sectionstar}[1]{\oldsection*{#1}}
+\renewcommand{\section}{\@ifstar\coe@sectionstar\coe@section}
+\makeatother
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \titlecontents{section}
@@ -311,6 +325,10 @@
 % Every offset below is absolute, in cm, measured from a page corner on
 % US letter (21.59 x 27.94 cm). Changing paper size means re-tuning them.
 \newcommand{\pretitle}[3]{%
+% Fill in the PDF's document properties. hyperref is loaded with
+% pdfusetitle, but nothing ever set \title/\author, so without this the
+% compiled PDF has blank metadata.
+\hypersetup{pdftitle={#1},pdfauthor={#3},pdfsubject={#2},pdfcreator={coereu class}}%
 \begin{titlepage}
 \pagestyle{empty}
 \begin{tikzpicture}[remember picture,overlay]
@@ -376,7 +394,7 @@
     % ---- COE WORDMARK (white knockout) -------------------------------
     \node[anchor = east] (coelogo)
         at ($(current page.north east)+(-1.4,-7.2)$)
-        {\includegraphics[width=4.2cm]{\coeLogoFile}};
+        {\includegraphics[width=5.6cm]{\coeLogoFile}};
 
     % ---- TITLE -------------------------------------------------------
     \node[%
