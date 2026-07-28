@@ -1,26 +1,26 @@
-% This is a LaTeX template for homework solving, intended to be: 
-
-% 1. Easy to use;
-% 2. Elegant;
-% 3. Self-explanatory.
-
-% It was written by Lucas R. Ximenes (Jimeens)
-
+% Coe College summer REU report template.
+%
+% Based on "A soft template for homework solutions" by Lucas R. Ximenes
+% (Jimeens). Retained with attribution as that template's license asks.
+%
+% Build: pdflatex -> biber -> pdflatex -> pdflatex
+% (three passes minimum: TikZ remember-picture, titletoc, and biblatex)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass{solutionclass} % I wrote the design using a4paper, 11pt, twoside, but feel free to change in solutionclass.cls file (line 4)
-
-\pagestyle{plain}
+\documentclass{coereu} % letterpaper, twoside, 11pt -- pass options here, e.g. [oneside]
 
 \begin{document}
 
 \pretitle
-{REU 2026}               % ⟸ Write your main Title here
-{Coe College}        % ⟸ Write your subtitle here
-{R. Perez}           % ⟸ Write your name here
+{Optical Timing in the RADiCAL Calorimeter} % ⟸ Main title
+{A Coe College REU Report}                  % ⟸ Subtitle
+{R. Perez}                                  % ⟸ Your name
 
-% Change your homework number here
-\def\homeworkNumber{\#}
+% Report metadata. All of these have defaults in the class -- override only
+% what you need.
+\renewcommand{\reportNumber}{1}
+\renewcommand{\reportKicker}{Coe College REU}
+\renewcommand{\coeProgram}{Spectroscopy at Coe College}
 
 \makeatletter
     \startcontents[sections]
@@ -28,7 +28,7 @@
     \chapter{Understanding the template}
 \makeatother
 
-    In this first part, I will dedicate myself to explaining how to use all the commands in this template. To start off, the entire \verb|solutionclass| was initially based on the \verb|book| class in order to increase the compatibility of some commands, such as the inclusion of the \verb|\chapter{}|. 
+    In this first part, I will dedicate myself to explaining how to use all the commands in this template. To start off, the entire \verb|coereu| class was initially based on the \verb|book| class in order to increase the compatibility of some commands, such as the inclusion of the \verb|\chapter{}|. 
 
     \divider
 
@@ -50,15 +50,15 @@
     \lipsum[1]
     
     
-    \begin{solution}[This is a unbreakable example]
+    \begin{results}[This is a unbreakable example]
         \lipsum[1] %\therefs\cite{wald1984GeneralRelativity}
-    \end{solution}
+    \end{results}
     
     \section{Breakable Form}\label{ex 2}
     \lipsum[1]
-    \begin{solution}[This is a breakable example]
+    \begin{results}[This is a breakable example]
         \lipsum[1-13]
-    \end{solution}
+    \end{results}
     
     \section{Using the references}
 
@@ -108,25 +108,25 @@
     
     \section{Additional Boxes}
 
-        I created a new environment which make a adaptable size box around the equation. To use this, you just need to write \verb|\begin{answer}| to start the environment. Use this like the equation environment. Below I show an example.
-        \begin{answer} \label{eq: 4}
+        I created a new environment which make a adaptable size box around the equation. To use this, you just need to write \verb|\begin{keyresult}| to start the environment. Use this like the equation environment. Below I show an example.
+        \begin{keyresult} \label{eq: 4}
             \mathcal{R}^{\alpha\beta} - \dfrac{1}{2}g^{\alpha\beta}\mathcal{R} =
                 8\pi GT^{\alpha\beta}
-        \end{answer}
+        \end{keyresult}
 
     
 
     \section{Final instructions}
 
-    To change the homework number, in line 13 of the \verb|main.tex|, the definition \verb|\homeworkNumber{\#}| is responsible for change the number, therefore, just put the number you want instead \verb|\#|.
-
-    \divider
-    
-    If you want to change the colors of the template, open the \verb|solutionclass.cls| file, find the \Acomment{Color settings} (line 127), and follow the guide written there.
+    Report metadata is set near the top of \verb|main.tex| with \verb|\renewcommand|: \verb|\reportNumber| is the large chapter numeral, \verb|\reportKicker| is the rotated spine label and running head, and \verb|\coeProgram| is the program line on the cover and in the footer. All three have defaults in the class, so you only override what you need.
 
     \divider
 
-    If you like to create \verb|\newcommand| in your \verb|.tex| files, I suggest you to write them in the last lines of the file \verb|solutionclass.cls| (line 512), to ensure that all packages are read. In addition, to add new packages in \verb|solutionclass.cls| you want to write \verb|\RequirePackage[]{}| instead \verb|\usepackage[]{}|.
+    The Coe palette lives in \verb|coereu.cls| under \Acomment{Color settings}. Crimson is \verb|#880011| and gold is \verb|#d3902f|, both taken from Coe's own stylesheet. Note these are \emph{web} values --- Coe publishes no Pantone or CMYK build, so confirm with the marketing office before sending anything to a printer.
+
+    \divider
+
+    If you like to create \verb|\newcommand| in your \verb|.tex| files, write them in the last lines of \verb|coereu.cls|, to ensure that all packages are read. To add new packages in \verb|coereu.cls| you want to write \verb|\RequirePackage[]{}| instead \verb|\usepackage[]{}|.
     
     \divider
 
@@ -136,11 +136,9 @@
             \item A unitary matrix is represented by the command \verb|\boldone| and looks like that: $\boldone$;
             \item To comment some part of the text, I created the command \verb|\Acomment{}| to write the text \Acomment{Like that}.
         \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Add these commands below if it's not a problem for you 
-    \thispagestyle{fancyplain}
-    \fancyhead{}
-    \renewcommand{\headrulewidth}{0pt}
-    \rfoot{Template by L. R. Ximenes (Jimeens)}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \divider
+
+    {\footnotesize\noindent Design based on \emph{A soft template for homework
+    solutions} by L. R. Ximenes (Jimeens), used and modified with attribution.
+    Rebranded for the Coe College summer REU.\par}
 \end{document}

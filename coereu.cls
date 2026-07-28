@@ -1,10 +1,23 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{solutionclass}[2023/03/03 My Custom LaTeX Class for exercise solutions]
+\ProvidesClass{coereu}[2026/07/27 Coe College Summer REU report class]
 
-\LoadClass[a4paper, twoside, 11pt]{book}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Coe College summer REU write-up template.
+%
+% Based on "A soft template for homework solutions" by Lucas R. Ximenes
+% (Jimeens), modified with attribution as its license requests. That
+% license also forbids selling the template or any modified version.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Any book-class option passes straight through, e.g.
+%   \documentclass[oneside]{coereu}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
+\ProcessOptions\relax
+
+\LoadClass[letterpaper, twoside, 11pt]{book}
 
 % LANGUAGE AND ENCODING
-\RequirePackage[portuguese, english]{babel} % Allows to use multiple languages in the document
+\RequirePackage[english]{babel} % Document language
 \RequirePackage[utf8]{inputenc} % Defines the input encoding
 \RequirePackage[T1]{fontenc} % Defines the font encoding
 
@@ -61,7 +74,18 @@
 \RequirePackage{etoolbox} % Toolbox of programming tools
 \RequirePackage{multicol} % Multiple columns
 \RequirePackage{caption} % Customizing captions
-\RequirePackage{lmodern} % Latin Modern fonts
+\RequirePackage{lmodern} % Latin Modern fonts (math)
+% COE TYPEFACES -- matches coe.edu, which loads exactly these two from
+% Google Fonts. Both ship with TeX Live and Overleaf.
+%   Roboto     -> body text
+%   Montserrat -> headings
+% To go back to a serif body, delete the [sfdefault] option below.
+\RequirePackage[sfdefault]{roboto}
+\RequirePackage{montserrat}
+% Guard: if this montserrat build doesn't expose \montserratfamily,
+% fall back to the default sans rather than failing to compile.
+\providecommand{\montserratfamily}{\sffamily}
+\newcommand{\coeHeadFont}{\montserratfamily}
 \RequirePackage{nameref} % Cross-referencing by name
 \RequirePackage{changepage} % Change page dimensions
 
@@ -87,7 +111,7 @@
 \newcommand{\therefs}{%
     {%\bfseries%
     \newline%
-    \textcolor{myLColor}{References:}%
+    \textcolor{coeCrimson}{References:}%
     }
 }
 
@@ -95,7 +119,7 @@
 % The below setting was written to print the references
 \AtEndDocument{%
     \clearpage
-    \pagestyle{fancy} % clears the middle part of the headers from here on (no year to specify)
+    \pagestyle{coereu} % defined near the end of this class
     \markboth{\textsc{References}}{\textsc{References}} % ensures headers are working as intended during reference chapter
     \printbibliography[heading=bibintoc, title=References]
 } % prints references
@@ -124,15 +148,41 @@
 \tikzset{>=stealth} % Arrow style for all tikZ environment.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% COLOR SETTINGS
+% COLOR SETTINGS -- COE COLLEGE PALETTE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% To change the darker color of the document, like the cover page background, change the hexadecimal code #101010 to the color which you want. To know what hexadecimal code you need, access https://htmlcolorcodes.com
-\definecolor{myDColor}{HTML}{101010} % Darker Color
-% To change the lighter color of the document, like the box solution backaground, change the hexadecimal code #e93820 to the color which you want
-\definecolor{myLColor}{HTML}{7736d9} % Lighter Color
-% To change the link color of the document, like the mentions, change the hexadecimal code #eb5a00 to the color which you want
-\definecolor{LinkColor}{HTML}{9669d9} % Link Color
+% Crimson and gold are taken from Coe's own production stylesheet
+% (coe.edu/application/themes/coecollege/css/custom.css), since Coe does
+% not publish its brand guide publicly. These are WEB values -- no
+% Pantone or CMYK build is published. Before sending anything to a
+% printer, confirm with o-marketing@coe.edu.
 
+\definecolor{coeCrimson}{HTML}{880011}   % Coe primary crimson
+\definecolor{coeGold}{HTML}{D3902F}      % Coe primary gold
+\definecolor{coeLightGold}{HTML}{DAA252} % Accent gold
+\definecolor{coePaper}{HTML}{F9F9F9}     % Near-white, for type on dark
+\definecolor{coeInk}{HTML}{2B0509}       % Crimson-black
+
+% The class's two structural colors. myDColor is the dark ground (cover
+% background, chapter blocks, rules); myLColor is the accent (section
+% marker, box frames, cover geometry).
+\definecolor{myDColor}{HTML}{2B0509}     % Darker Color  = crimson-black
+\definecolor{myLColor}{HTML}{D3902F}     % Lighter Color = Coe gold
+
+% Links are crimson, not gold: gold on white is far too low-contrast for
+% body-size text. Same reasoning applies to equation tags and \therefs.
+\definecolor{LinkColor}{HTML}{880011}    % Link Color
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% REPORT METADATA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Override any of these in your main .tex file with \renewcommand.
+% Unlike the original class, these all have defaults, so a missing
+% definition no longer breaks the build.
+\newcommand{\reportNumber}{1}                            % big chapter numeral
+\newcommand{\reportKicker}{Coe College REU}              % rotated spine label
+\newcommand{\coeProgram}{Spectroscopy at Coe College}    % cover program line
+\newcommand{\coeLogoFile}{Coe_Logo_Inverse.png}          % white knockout mark
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % CHAPTER AND SECTION SETTINGS
@@ -147,8 +197,8 @@
         inner sep       = 0pt,
         align           = center, 
         fill            = myDColor,
-        font            = \color{white}\fontsize{70}{90}\selectfont,
-    ] (num) {\homeworkNumber}; 
+        font            = \color{coePaper}\coeHeadFont\bfseries\fontsize{70}{90}\selectfont,
+    ] (num) {\reportNumber};
     
     \node[%
          minimum height     = 20pt,
@@ -156,8 +206,8 @@
         inner sep           = 0pt,
         rotate              = 90,
         anchor              = south,
-        font                = \color{black}\small\normalfont
-    ] (listN) at (num.west) {\textls[180]{\textsc{Homework N°}}};
+        font                = \color{coeCrimson}\small\coeHeadFont
+    ] (listN) at (num.west) {\textls[180]{\textsc{\reportKicker}}};
     
     \node[%
         minimum height  = 3.2cm,% Height of the box    
@@ -201,35 +251,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This command create a polygon on the left side of the section title
+% Section marker: a filled gold disc with concentric rings running off the
+% left edge of the page. Circles rather than the original hexagons, so the
+% section markers read as part of the same wavefront family as the cover.
 \newcommand{\polygonSection}{%
 \begin{tikzpicture}[remember picture, overlay,baseline=1.5ex]
 \node[%
-    regular polygon sides   = 6, 
-    rounded corners,
-    regular polygon,
+    circle,
     minimum size            = 1.58cm,
-    ultra thick,
     inner sep               = 0pt,
-    fill                    = myLColor!85,
+    fill                    = myLColor!90,
     anchor                  = south
-] at (current page.north west |- 0,0) (red polygon) {};
+] at (current page.north west |- 0,0) (coemarker) {};
 \foreach \i in {2.5,...,4.5}{%
-    \node[%
-        myDColor,
-        regular polygon sides   = 6, 
-        regular polygon,
-        rounded corners,
-        minimum size            = \i cm,
-        ultra thick,
-        draw,
-    ] at (red polygon) {};
+    \pgfmathsetmacro{\ringrad}{\i/2}%
+    \draw[myDColor, ultra thick] (coemarker) circle (\ringrad cm);
 }
 \end{tikzpicture}}
 
 \RequirePackage{titlesec}
 \titleformat{\section}[display]
-    {\vspace{2em}\normalfont\bfseries\color{myDColor}\huge}{}{}
+    {\vspace{2em}\normalfont\coeHeadFont\bfseries\color{myDColor}\huge}{}{}
     {\polygonSection\hspace{0.666em}}
 
 
@@ -254,110 +296,132 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This command change the color of the label number in \label{} commands
 \makeatletter
-\def\tagform@#1{\maketag@@@{\normalfont(\color{myLColor}\ignorespaces#1\unskip\@@italiccorr\color{black})}}
+\def\tagform@#1{\maketag@@@{\normalfont(\color{coeCrimson}\ignorespaces#1\unskip\@@italiccorr\color{black})}}
 \makeatother
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % DOCUMENT COVER
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Here the commands for building the document cover were made.
+% Cover art: concentric wavefronts and an emission-line band, in place of
+% the original hexagon bursts. The motif is spectroscopy -- the subject of
+% Coe's REU site -- and it also sidesteps the fact that hexagons appear
+% nowhere in Coe's own visual system.
+%
+% Every offset below is absolute, in cm, measured from a page corner on
+% US letter (21.59 x 27.94 cm). Changing paper size means re-tuning them.
 \newcommand{\pretitle}[3]{%
 \begin{titlepage}
 \pagestyle{empty}
 \begin{tikzpicture}[remember picture,overlay]
-    % BACKGROUND
+    % ---- GROUND ------------------------------------------------------
     \fill[myDColor] (current page.south west) rectangle (current page.north east);
-    \foreach \i in {2.5,...,22}{%
-        \node[%
-            myDColor!60,
-            regular polygon sides   = 6, 
-            regular polygon,
-            rounded corners,
-            minimum size            = \i cm,
-            ultra thick,
-            draw,
-        ] at ($(current page.west)+(2.5,-5)$) {};
-    }
-    % BACKGROUND POLYGONS
-    \foreach \i in {0.5,...,22}{%
-        \node[%
-            myLColor!85,        
-            regular polygon sides   = 6, 
-            regular polygon,
-            rounded corners,
-            minimum size            = \i cm,
-            ultra thick,
-            draw,
-        ] at ($(current page.north west)+(2.5,0)$) {};
-    }
-    \foreach \i in {0.5,...,22}{%
-        \node[%
-            myDColor!90,        
-            regular polygon sides   = 6, 
-            regular polygon,
-            rounded corners,
-            minimum size            = \i cm,
-            ultra thick,
-            draw,
-        ] at ($(current page.north east)+(0,-10)$) {};
-    }
-    \foreach \i in {21,...,6}{%
-        \node[
-            myLColor!85,        
-            regular polygon sides   = 6, 
-            regular polygon,
-            rounded corners,
-            minimum size            = \i cm,
-            ultra thick,
-            draw,
-        ] at ($(current page.south east)+(-0.2,0.1)$) {};
-    }
-    % TITLE
+
+    % ---- WAVEFRONTS --------------------------------------------------
+    % Clipped to the page so the outer rings don't bleed into the margins
+    % of the PDF bounding box.
+    \begin{scope}
+        \clip (current page.south west) rectangle (current page.north east);
+
+        % Gold wavefronts expanding from the lower left, under the year badge
+        \foreach \i in {1,...,22}{%
+            \pgfmathsetmacro{\ringop}{1-\i/26}%
+            \pgfmathsetmacro{\ringrad}{\i*0.62}%
+            \draw[coeGold, line width=0.9pt, opacity=\ringop]
+                ($(current page.west)+(2.4,-5)$) circle (\ringrad cm);
+        }
+        % Crimson counter-wavefronts from the upper right
+        \foreach \i in {1,...,20}{%
+            \pgfmathsetmacro{\ringop}{1-\i/24}%
+            \pgfmathsetmacro{\ringrad}{\i*0.78}%
+            \draw[coeCrimson, line width=1.7pt, opacity=\ringop]
+                ($(current page.north east)+(-1.2,-2.4)$) circle (\ringrad cm);
+        }
+        % Faint interference rings, bottom right
+        \foreach \i in {1,...,16}{%
+            \pgfmathsetmacro{\ringop}{0.45-\i/44}%
+            \pgfmathsetmacro{\ringrad}{\i*0.9}%
+            \draw[coeLightGold, line width=0.6pt, opacity=\ringop]
+                ($(current page.south east)+(-0.4,0.3)$) circle (\ringrad cm);
+        }
+
+        % ---- EMISSION-LINE BAND --------------------------------------
+        % Irregular spacing and varying width/opacity, the way a real
+        % emission spectrum looks. Format is x-offset/width-pt/opacity.
+        \foreach \x/\w/\o in {%
+            1.6/2.2/0.95, 2.05/0.9/0.55, 2.6/3.4/1.0,  3.15/1.1/0.45,
+            3.5/0.8/0.35, 4.15/2.8/0.9,  4.6/1.4/0.6,  5.3/0.7/0.30,
+            5.75/3.0/0.95, 6.4/1.0/0.4,  6.8/1.8/0.7,  7.6/0.8/0.30,
+            8.1/2.4/0.85, 8.7/1.2/0.5,   9.4/0.9/0.35, 10.0/2.0/0.75}{%
+            \draw[coeGold, line width=\w pt, opacity=\o]
+                ($(current page.south west)+(\x,1.5)$) --
+                ($(current page.south west)+(\x,4.6)$);
+        }
+        \draw[coeGold, opacity=0.55, line width=0.5pt]
+            ($(current page.south west)+(1.2,1.5)$) --
+            ($(current page.south west)+(10.8,1.5)$);
+    \end{scope}
+
+    % ---- COE WORDMARK (white knockout) -------------------------------
+    \node[anchor = east] (coelogo)
+        at ($(current page.north east)+(-1.4,-7.2)$)
+        {\includegraphics[width=4.2cm]{\coeLogoFile}};
+
+    % ---- TITLE -------------------------------------------------------
     \node[%
-        myLColor!5,
-        rounded corners,        
-        minimum height  = 3cm,         
-        minimum width   = 0.625*\paperwidth,
-        left,
-    ] (title) at ($(current page.north east)+(0,-10)$){%
-        {\fontsize{25}{30} \selectfont \bfseries #1} % TITLE = #1
-    };
-    % SUBTITLE
+        text        = coePaper,
+        anchor      = east,
+        align       = right,
+        text width  = 0.62\paperwidth,
+        font        = \coeHeadFont\bfseries\fontsize{30}{34}\selectfont,
+    ] (title) at ($(current page.north east)+(-1.4,-9.8)$) {#1};
+
+    % ---- SUBTITLE ----------------------------------------------------
     \node[%
-        myLColor!10,
-        rounded corners,
-        minimum height  = 2cm, 
-        minimum width   = 0.625*\paperwidth,        
-        left,
-    ] at ($(current page.north east)+(0,-11)$){%
-        {\huge \textit{#2}} % SUBTITLE = #2
-    };
-    % AUTHOR NAME
+        text        = coeGold,
+        anchor      = north east,
+        align       = right,
+        text width  = 0.62\paperwidth,
+        font        = \coeHeadFont\huge,
+    ] (subtitle) at ($(title.south east)+(0,-0.35)$) {#2};
+
+    % ---- RULE --------------------------------------------------------
+    \draw[coeGold, line width=1.2pt]
+        ($(subtitle.south east)+(0,-0.5)$) -- ++(-6,0);
+
+    % ---- AUTHOR ------------------------------------------------------
     \node[%
-        myLColor!5,
-        rounded corners,
-        minimum height  = 2cm, 
-        minimum width   = 0.625*\paperwidth,
-        left,
-    ] at ($(current page.north east)+(0,-13)$){%
-        {\Large \textsc{#3}} % NAME = #3
-    };
-    % YEAR
+        text        = coePaper,
+        anchor      = north east,
+        align       = right,
+        text width  = 0.62\paperwidth,
+        font        = \Large,
+    ] (author) at ($(subtitle.south east)+(0,-0.9)$) {\textsc{#3}};
+
+    % ---- PROGRAM LINE ------------------------------------------------
+    % Letterspaced uppercase micro-label, echoing Coe's own web styling.
     \node[%
-        regular polygon sides   = 6, 
-        rounded corners,
-        regular polygon,
-        minimum size            = 2.5 cm,
-        ultra thick,
-        inner sep               = 0,
-        fill                    = myLColor!85,
-        text                    = myLColor!5,
-    ] at ($(current page.west)+(2.5,-5)$) {\LARGE \bfseries \the\year};
-    % Institute name
-    \node[text = myLColor!5] (Institute) at ($(title.north)+(0,-0.6)$$) {Institute of Physics};
-    % University logo
-    \node[] at ($(Institute.north)+(0,0.6)$){\includegraphics[width=2.5cm]{University_Logo.png}};
-    
+        text        = coePaper,
+        opacity     = 0.75,
+        anchor      = north east,
+        align       = right,
+        text width  = 0.62\paperwidth,
+        font        = \coeHeadFont\footnotesize,
+    ] at ($(author.south east)+(0,-0.25)$)
+        {\textls[120]{\MakeUppercase{\coeProgram}}};
+
+    % ---- YEAR BADGE --------------------------------------------------
+    % Sits at the origin of the gold wavefronts, so the rings read as
+    % radiating out of the year itself.
+    \node[%
+        circle,
+        minimum size = 2.5cm,
+        inner sep    = 0pt,
+        fill         = coeGold,
+        text         = myDColor,
+        font         = \coeHeadFont\bfseries\LARGE,
+    ] at ($(current page.west)+(2.4,-5)$) {\the\year};
+
 \end{tikzpicture}
 \end{titlepage}
 }
@@ -371,7 +435,7 @@
 % NEW ENVIRONMENTS AND NEW COMMANDS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This environment was made to produce a box which maintain the width and height of the text inside it.
-\newtcolorbox{solution}[1][]{%
+\newtcolorbox{results}[1][]{%
     enhanced,
     skin first=enhanced,
     skin middle=enhanced,
@@ -382,7 +446,7 @@
     frame hidden,
     borderline west = {4pt}{0pt}{myDColor},
     colback = myLColor!10,
-    coltitle = myLColor!5,
+    coltitle = coePaper,
     sharp corners,
     rounded corners = southeast,
     arc is angular,
@@ -402,14 +466,14 @@
         bottomrule = 0pt,
         toprule = 0pt,
     },
-    title = {\bfseries\large Solution:}, 
+    title = {\coeHeadFont\bfseries\large Results:},
     overlay unbroken={%
-        \node[anchor=west, color=black!70] at (title.east) {#1};
+        \node[anchor=west, color=coeCrimson] at (title.east) {\;#1};
         \path[fill = tcbcolback!80!black] 
             ([yshift = 3mm]interior.south east) -- ++(-0.4,-0.1) -- ++(0.1,-0.2);
     },
     overlay first = {%
-        \node[anchor=west, color=black!70] at (title.east) {#1};
+        \node[anchor=west, color=coeCrimson] at (title.east) {\;#1};
         \path[fill = tcbcolback!80!black] 
             ([yshift = 3mm]interior.south east) -- ++(-0.4,-0.1) -- ++(0.1,-0.2);
     },
@@ -432,7 +496,7 @@
 \newcommand*\eqlineset{\pgfqkeys{/eqlines}}
 \eqlineset{
   picture/.style={baseline, remember picture},
-  line/.style={thick, draw=myLColor, line cap=round},
+  line/.style={thick, draw=coeCrimson, line cap=round},
   node/.style={
     minimum size=+0pt, inner sep=+0pt, outer ysep=+.3333em, anchor=base,
     name=tma\thetikzmarkalign},
@@ -491,12 +555,12 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This command was made to create a box (which can be labeled) to write equations which are answers for a random problem
-\NewEnviron{answer}{
+\NewEnviron{keyresult}{
 \begin{equation}
 \tcbhighmath[
          boxrule = 1pt,
-         colframe = myLColor,
-         colback = black!80,
+         colframe = coeGold,
+         colback = myDColor,
          sharp corners,
          rounded corners = southeast,
          rounded corners = northeast,
@@ -504,7 +568,7 @@
          rounded corners = northwest,
          arc is angular,
          arc = 3mm,
-         coltext = white,
+         coltext = coePaper,
      ]{\BODY}\end{equation}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -524,6 +588,29 @@
 \newcommand*{\boldone}{\mathbbold{1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PAGE STYLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The original class defined no header or footer at all -- it loaded
+% fancyhdr, called \pagestyle{fancy}, and left the document to patch
+% things per-page with deprecated fancyhdr v3 commands (\rfoot, and the
+% 'fancyplain' style). This is a proper v4 style instead.
+\fancypagestyle{coereu}{%
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0.8pt}
+    \renewcommand{\footrulewidth}{0pt}
+    % Outer header: current chapter. Inner header: program kicker.
+    \fancyhead[LE,RO]{\coeHeadFont\footnotesize\textcolor{coeCrimson}{\nouppercase{\leftmark}}}
+    \fancyhead[RE,LO]{\coeHeadFont\footnotesize\textcolor{myDColor!60}{\reportKicker}}
+    % Outer footer: page x of y. lastpage is already loaded for this.
+    \fancyfoot[LE,RO]{\coeHeadFont\footnotesize\textcolor{myDColor}{\thepage\,/\,\pageref{LastPage}}}
+    \fancyfoot[RE,LO]{\coeHeadFont\scriptsize\textcolor{myDColor!55}{\coeProgram}}
+}
+% Gold head rule rather than the default black.
+\renewcommand{\headrule}{{\color{coeGold}\hrule height \headrulewidth}}
+\pagestyle{coereu}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEFINE YOUR NEW COMMANDS FROM HERE:
