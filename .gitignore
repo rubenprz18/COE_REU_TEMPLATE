@@ -1,0 +1,33 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.idx
+*.ind
+*.ilg
+*.nav
+*.snm
+*.vrb
+*.xdv
+
+# titletoc / minitoc partial contents files
+*.ctc
+*.ptc
+*.tcp
+*.tps
+
+# Build output directory
+build/
+
+# macOS
+.DS_Store
