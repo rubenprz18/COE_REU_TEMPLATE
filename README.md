@@ -166,9 +166,12 @@ no overfull boxes.
 
 Inherited from the original template, documented here so they don't surprise you:
 
-- **`\ref{}` to a section gives the wrong number**, because sections are
-  deliberately unnumbered. Use `\nameref{}` instead, which prints the section
-  title.
+- **`\ref{}` to a section gives the wrong number** — it returns the enclosing
+  chapter number, because sections are deliberately unnumbered. Use
+  `\nameref{}` instead, which prints the section title. (`\nameref` was itself
+  broken until it was fixed here; if you are working from an older copy of the
+  class, it expands to nothing.) Figures and equations are numbered normally,
+  so `\ref` is correct for those.
 - **Chapters do not start a new page.** The class deliberately patches this out
   so the cover isn't followed by a blank. With multiple chapters they run on
   inline; add `\clearpage` yourself if you want the break.

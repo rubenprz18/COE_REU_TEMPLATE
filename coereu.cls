@@ -293,6 +293,11 @@
 \newcommand{\coe@section}[1]{%
     \oldsection*{#1}%
     \phantomsection
+    % \phantomsection leaves \@currentlabelname empty, which silently breaks
+    % \nameref for every section -- it expands to nothing at all. Since
+    % sections are unnumbered, \nameref is the ONLY way to cross-reference
+    % one, so setting this explicitly is what makes section references work.
+    \def\@currentlabelname{#1}%
     \addcontentsline{toc}{section}{#1}%
 }
 \newcommand{\coe@sectionstar}[1]{\oldsection*{#1}}
