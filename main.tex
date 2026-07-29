@@ -1,144 +1,124 @@
 % Coe College summer REU report template.
 %
+% Edit this file. Leave coereu.cls alone unless you're changing the design.
+% See README.md for the full command reference.
+%
+% Build: latexmk -pdf main.tex
+%   or:  pdflatex -> biber -> pdflatex -> pdflatex
+% Compile with pdfLaTeX, NOT XeLaTeX.
+%
 % Based on "A soft template for homework solutions" by Lucas R. Ximenes
 % (Jimeens). Retained with attribution as that template's license asks.
-%
-% Build: pdflatex -> biber -> pdflatex -> pdflatex
-% (three passes minimum: TikZ remember-picture, titletoc, and biblatex)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass{coereu} % letterpaper, twoside, 11pt -- pass options here, e.g. [oneside]
 
+% Delete this line once bib.bib holds real references and you want a
+% References section. Until then it keeps an empty one from appearing.
+\coeprintbibfalse
+
 \begin{document}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COVER -- title, subtitle, your name
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pretitle
-{Optical Timing in the RADiCAL Calorimeter} % ⟸ Main title
-{A Coe College REU Report}                  % ⟸ Subtitle
-{R. Perez}                                  % ⟸ Your name
+{Your Project Title Here}          % ⟸ Main title
+{A Coe College Summer Research Report} % ⟸ Subtitle
+{Your Name}                        % ⟸ Your name
 
-% Report metadata. All of these have defaults in the class -- override only
-% what you need.
-\renewcommand{\reportNumber}{1}
-\renewcommand{\reportKicker}{Coe College REU}
-\renewcommand{\coeProgram}{Research at Coe College}
+% Report metadata. All have defaults -- override only what you need.
+\renewcommand{\reportNumber}{1}                        % big chapter numeral
+\renewcommand{\reportKicker}{Coe College REU}          % spine label + header
+\renewcommand{\coeProgram}{Research at Coe College}    % cover + footer line
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BODY
+% \startcontents must stay before your first \chapter -- it feeds the
+% mini-summary box on the chapter page.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
     \startcontents[sections]
     \phantomsection
-    \chapter{Understanding the template}
+    \chapter{Summer Research Report}
 \makeatother
 
-    In this first part, I will dedicate myself to explaining how to use all the commands in this template. To start off, the entire \verb|coereu| class was initially based on the \verb|book| class in order to increase the compatibility of some commands, such as the inclusion of the \verb|\chapter{}|. 
+\section{Introduction}\label{sec:intro}
 
-    \divider
+State what problem you worked on and why it matters, in language a
+scientifically literate reader outside your subfield can follow. Say what
+the report covers, and close with a sentence or two mapping out the
+sections that follow.
 
-    For the document cover, the commands \verb|\author{}|, \verb|\title{}|, etc. are not needed so the command \verb|\pretitle{#1}{#2}{#3}| was created to include the title, subtitle and author's name respectively. In this command, the year has also been entered, but it is done automatically with the command \verb|\theyear|, so you don't have to worry about it.
+Use \verb|\divider| to separate passages within a section:
 
-    \divider
+\divider
 
-    The \verb|\divider| command creates a horizontal rule that can be used to visually separate specific content.
+Refer to other sections by name with \verb|\nameref|, like
+\nameref{sec:methods} --- not \verb|\ref|, which returns the wrong thing
+because sections here are deliberately unnumbered. Figures and equations
+\emph{are} numbered, so \verb|\ref| is correct for those.
 
-    \divider
+\section{Background}\label{sec:background}
 
-    The \verb|\section{}| command has a proprietary style that automatically generates concentric rings running off the left edge of the page, echoing the wavefront motif on the cover. Note that the section number is removed in the class configuration to maintain a cleaner appearance in the mini-summary. Speaking of the mini-summary, it has a fixed size so that the content recommended to be inside it is approximately 12 items. This means that the font size will decrease as more sections are added.
+The context a reader needs before your own work makes sense: the state of
+the field, the instrument or system you worked with, and the open question
+your project addresses.
 
-    \divider
+Cite sources with \verb|\cite{key}| after adding entries to
+\verb|bib.bib|, or with \verb|\textcite{key}| when the author is part of
+your sentence.
 
-    This template was initially develop to make solutions of exercises, therefore the first paragraph was thought to write the exercise enunciate, in this way, I didn't modify the text formatting in this part. However, I decided do develop a personalized environment to write the respective solution of the exercise. These environment has two forms: an unbreakable and a breakable form. In the first Section, I will write an example for the unbreakable form, and in the second Section an example for the breakable form.
+\section{Methods}\label{sec:methods}
 
-    \section{Unbreakable Form}\label{ex 1}
-    \lipsum[1]
-    
-    
-    \begin{results}[This is a unbreakable example]
-        \lipsum[1] %\therefs\cite{wald1984GeneralRelativity}
-    \end{results}
-    
-    \section{Breakable Form}\label{ex 2}
-    \lipsum[1]
-    \begin{results}[This is a breakable example]
-        \lipsum[1-13]
-    \end{results}
-    
-    \section{Using the references}
+What you actually did. Be concrete about tools, techniques, and choices ---
+including the ones that did not work. A short, honest account of what broke
+and how you diagnosed it is usually more valuable to the reader than a
+tidy narrative in which everything worked the first time.
 
-    To use references, we have two methods for citing a book, article, etc. The first method is written as \verb|\therefs\cite{#key}| where \verb|#key| represents the citation key of the bibliographic reference. For example, \verb|\therefs\cite{WaldGR}| produces:
-    \therefs\cite{WaldGR,Choquet-BruhatGR}
-    
-    This method is recommended for use when the citation is not a direct one, i.e., when the paragraph or text is based on the reference, but not directly using it. The second method is recommended to use when the citation are directly used to write the text or explain some argument. This method is really simple, you just need to use \verb|\textcite{#key}|, for example:
-    "The book written by \textcite{WaldGR} and the books written by \textcite{Choquet-BruhatGR, Choquet-BruhatGR2} are the best books to study General Relativity"
-    
-    \section{Equations style}
-        In general, the \verb|\begin{equation}| environments are simple, just the label color changes. An example to show:
-            \begin{equation}\label{eq: 1}
-                \mathcal{R}^{\alpha\beta} - \dfrac{1}{2}g^{\alpha\beta}\mathcal{R} =
-                8\pi GT^{\alpha\beta}
-            \end{equation}
+To include a figure:
 
-        In addition, the environment \verb|\begin{align}| or \verb|\begin{align*}| has vertical lines at each line break and to do this, there is a specific way:
-            \begin{align}
-                \dfrac{1}{\sqrt{-g}}\partial_{\uprho}(\sqrt{-g}) & \eq -\dfrac{1}{2(-g)}\partial_{\uprho}(g) \label{eq: 2} \\
-                & \eq \dfrac{1}{2g}\dfrac{\delta(g)}{\delta(g_{\upmu\upnu})}\partial_{\uprho}(g_{\upmu\upnu}) \nonumber \\
-                & \eq \dfrac{1}{2g}gg^{\upmu\upnu}\partial_{\uprho}(g_{\upmu\upnu}) \nonumber \\
-                & \eq \dfrac{1}{2}g^{\upmu\upnu}\partial_{\uprho}(g_{\upmu\upnu}) = \Gamma^{\alpha}_{\uprho\alpha}\ \label{eq:3}
-            \end{align}
+\begin{verbatim}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{yourfigure.png}
+    \caption{What the reader should notice.}
+    \label{fig:example}
+\end{figure}
+\end{verbatim}
 
-        Note that for line breaks, I use the command \verb|\\| and after that, to align, \verb|&| along with a custom command \verb|\eq|. Also, if you don't want to align a specific single line, use the command \verb|\noeq| instead of \verb|\eq| to make the line continue to the next equation, see the following example usingo \verb|\begin{align*}|:
-            \begin{align*}
-                \Gamma^{\uprho}_{\upmu\upnu} & \eq \dfrac{1}{2}g^{\uprho\sigma}\left(
-                    \partial_{\upmu}g_{\sigma\upnu} + 
-                    \partial_{\upnu}g_{\sigma\upmu} -
-                    \partial_{\sigma}g_{\upmu\upnu}
-                \right) \\
-                & \eq \dfrac{1}{2}(\eta^{\uprho\sigma} + h^{\uprho\sigma})[
-                    \partial_{\upmu}(\eta_{\sigma\upnu} + h_{\sigma\upnu}) +  \\
-                & \noeq + \partial_{\upnu}(\eta_{\sigma\upmu} + h_{\sigma\upmu}) -
-                    \partial_{\sigma}(\eta_{\upmu\upnu} + h_{\upmu\upnu}) ]  \\
-                & \eq \dfrac{1}{2}(\eta^{\uprho\sigma} + h^{\uprho\sigma})\left(
-                    \partial_{\upmu}h_{\sigma\upnu} + 
-                    \partial_{\upnu}h_{\sigma\upmu} - 
-                    \partial_{\sigma}h_{\upmu\upnu}
-                \right)  \\
-                & \eq \dfrac{1}{2}\eta^{\uprho\sigma} \left(
-                    \partial_{\upmu}h_{\sigma\upnu} + 
-                    \partial_{\upnu}h_{\sigma\upmu} - 
-                    \partial_{\sigma}h_{\upmu\upnu}
-                \right) + \mathcal{O}(h) 
-            \end{align*}
-    
-    \section{Additional Boxes}
+\section{Results}\label{sec:results}
 
-        I created a new environment which make a adaptable size box around the equation. To use this, you just need to write \verb|\begin{keyresult}| to start the environment. Use this like the equation environment. Below I show an example.
-        \begin{keyresult} \label{eq: 4}
-            \mathcal{R}^{\alpha\beta} - \dfrac{1}{2}g^{\alpha\beta}\mathcal{R} =
-                8\pi GT^{\alpha\beta}
-        \end{keyresult}
+What you found. Use the \verb|results| environment to set off a finding you
+want the reader to stop at:
 
-    
+\begin{results}[optional label]
+    A highlighted passage. The box breaks across pages on its own, so it
+    can hold as much as you need.
+\end{results}
 
-    \section{Final instructions}
+For a single equation that matters more than the rest, use
+\verb|keyresult|, which boxes it:
 
-    Report metadata is set near the top of \verb|main.tex| with \verb|\renewcommand|: \verb|\reportNumber| is the large chapter numeral, \verb|\reportKicker| is the rotated spine label and running head, and \verb|\coeProgram| is the program line on the cover and in the footer. All three have defaults in the class, so you only override what you need.
+\begin{keyresult}\label{eq:example}
+    E = mc^{2}
+\end{keyresult}
 
-    \divider
+\section{Discussion}\label{sec:discussion}
 
-    The Coe palette lives in \verb|coereu.cls| under \Acomment{Color settings}. Crimson is \verb|#880011| and gold is \verb|#d3902f|, both taken from Coe's own stylesheet. Note these are \emph{web} values --- Coe publishes no Pantone or CMYK build, so confirm with the marketing office before sending anything to a printer.
+What the results mean, how far they can be trusted, and what limits them.
+Say plainly where the uncertainty lies --- a stated limitation reads as
+competence, not weakness.
 
-    \divider
+\section{Conclusions and Future Work}\label{sec:conclusions}
 
-    If you like to create \verb|\newcommand| in your \verb|.tex| files, write them in the last lines of \verb|coereu.cls|, to ensure that all packages are read. To add new packages in \verb|coereu.cls| you want to write \verb|\RequirePackage[]{}| instead \verb|\usepackage[]{}|.
-    
-    \divider
+Summarise briefly, then say what comes next: the questions still open and
+what you would do with more time.
 
-    To finish, I'll comment on some extra commands that I implemented in the template to make things a little prettier.
-        \begin{itemize}
-            \item Vectors \verb|\vec{}| are always written using \textbf{bold} notation. The reason for this is that when the math gets more complicated, the notation with the arrow ends up making things more "messy", so to speak;
-            \item A unitary matrix is represented by the command \verb|\boldone| and looks like that: $\boldone$;
-            \item To comment some part of the text, I created the command \verb|\Acomment{}| to write the text \Acomment{Like that}.
-        \end{itemize}
-    \divider
+\section{Acknowledgements}\label{sec:ack}
 
-    {\footnotesize\noindent Design based on \emph{A soft template for homework
-    solutions} by L. R. Ximenes (Jimeens), used and modified with attribution.
-    Rebranded for the Coe College summer REU.\par}
+Thank your advisor, collaborators, and anyone whose work you built on.
+Include the funding acknowledgement here --- confirm the exact grant
+number with your advisor rather than copying it from another document.
+
 \end{document}
